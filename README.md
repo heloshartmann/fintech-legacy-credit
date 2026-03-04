@@ -20,6 +20,44 @@ Aplicação de análise de crédito desenvolvida com Spring Boot 4.0.3, JPA, H2 
 
 **Sintoma observado:** método com múltiplas regras de negócio e infraestrutura misturadas, com diversos desvios condicionais.
 
+### 2) Dívidas Técnicas Identificadas
+
+#### `AnaliseCreditoService`
+1. **Método monolítico com alta complexidade ciclomática**
+- Muitas decisões em um único método (`analisarSolicitacao`), dificultando manutenção e testes granulares.
+
+2. **Acoplamento temporal e latência artificial**
+- `Thread.sleep(2000)` bloqueia a thread e impacta performance/escalabilidade.
+
+3. **Uso de literais mágicos (magic numbers/strings)**
+- Ex.: `500`, `800`, `5000`, `50000`, `700`, `"PF"`, `"PJ"` embutidos na regra.
+
+4. **Ausência de validação robusta de entrada**
+- `tipoConta` pode ser `null` (potencial `NullPointerException` em `tipoConta.equals(...)`).
+
+5. **Regra de negócio sensível a contexto sem abstração**
+- Decisão por fim de semana embutida diretamente, sem relógio injetável (baixa testabilidade).
+
+6. **`processarLote` com parâmetros fixos (hardcoded)**
+- Chama `analisarSolicitacao` com valores estáticos (`1000.0`, `600`, `false`, `"PF"`).
+
+#### `ProcessadorVendaService`
+1. **Classe sem estereótipo Spring (`@Service`)**
+- Inconsistência arquitetural em projeto Spring.
+
+2. **Múltiplas responsabilidades no mesmo método**
+- Validação, cálculo de frete, cálculo de imposto, “persistência” e “notificação” no mesmo fluxo.
+
+3. **Regras com literais mágicos**
+- CEPs (`"85"`, `"01"`), fretes (`10`, `20`, `50`) e alíquotas (`0.18`, `0.05`) hardcoded.
+
+4. **Comparação de string vulnerável a `null`**
+- `tipo.equals(...)` pode gerar `NullPointerException` se `tipo` vier nulo.
+
+### 3) Conclusão da Análise
+
+Os dois serviços apresentam **dívida técnica acumulada de legibilidade, testabilidade e robustez**. O principal sintoma estrutural é o uso de **fluxo condicional excessivamente aninhado** e regras de negócio embutidas diretamente no método, sem abstrações.
+
 ## 🚀 Tecnologias Utilizadas
 
 - **Java 21**

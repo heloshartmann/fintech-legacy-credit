@@ -9,14 +9,12 @@ Aplicação de análise de crédito desenvolvida com Spring Boot 4.0.3, JPA, H2 
 #### `AnaliseCreditoService#analisarSolicitacao(...)`
 - `if`: **7**
 - `else if`: **1**
-- `else`: **6** 
 
 **Sintoma observado:** forte encadeamento de decisões aninhadas, reduzindo legibilidade e aumentando risco de regressão.
 
 #### `ProcessadorVendaService#processar(...)`
 - `if`: **4**
 - `else if`: **2**
-- `else`: **2**
 
 **Sintoma observado:** método com múltiplas regras de negócio e infraestrutura misturadas, com diversos desvios condicionais.
 

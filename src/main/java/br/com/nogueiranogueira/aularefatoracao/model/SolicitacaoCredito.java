@@ -24,7 +24,6 @@ public class SolicitacaoCredito {
     private String cliente;
 
     @NotNull(message = "Valor não pode ser nulo")
-    @Positive(message = "Valor deve ser positivo")
     @Column(nullable = false)
     private Double valor;
 
@@ -39,9 +38,9 @@ public class SolicitacaoCredito {
     private Boolean negativado;
 
     @NotBlank(message = "Tipo de conta não pode ser vazio")
-    @Pattern(regexp = "^(PF|PJ)$", message = "Tipo de conta deve ser PF ou PJ")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipoConta;
+    private TipoConta tipoConta;
 
     @Column(nullable = false)
     private Boolean aprovado;
@@ -55,6 +54,78 @@ public class SolicitacaoCredito {
     @PrePersist
     protected void onCreate() {
         dataSolicitacao = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public Boolean getNegativado() {
+        return negativado;
+    }
+
+    public void setNegativado(Boolean negativado) {
+        this.negativado = negativado;
+    }
+
+    public TipoConta getTipoConta() {
+        return tipoConta;
+    }
+
+    public void setTipoConta(TipoConta tipoConta) {
+        this.tipoConta = tipoConta;
+    }
+
+    public Boolean getAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(Boolean aprovado) {
+        this.aprovado = aprovado;
+    }
+
+    public String getMotivoReprovacao() {
+        return motivoReprovacao;
+    }
+
+    public void setMotivoReprovacao(String motivoReprovacao) {
+        this.motivoReprovacao = motivoReprovacao;
+    }
+
+    public LocalDateTime getDataSolicitacao() {
+        return dataSolicitacao;
+    }
+
+    public void setDataSolicitacao(LocalDateTime dataSolicitacao) {
+        this.dataSolicitacao = dataSolicitacao;
     }
 }
 

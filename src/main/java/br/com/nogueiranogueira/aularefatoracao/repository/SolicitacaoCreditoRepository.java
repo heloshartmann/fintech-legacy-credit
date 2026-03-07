@@ -1,6 +1,7 @@
 package br.com.nogueiranogueira.aularefatoracao.repository;
 
 import br.com.nogueiranogueira.aularefatoracao.model.SolicitacaoCredito;
+import br.com.nogueiranogueira.aularefatoracao.model.TipoConta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ public interface SolicitacaoCreditoRepository extends JpaRepository<SolicitacaoC
 
     List<SolicitacaoCredito> findByAprovado(Boolean aprovado);
 
-    List<SolicitacaoCredito> findByTipoConta(String tipoConta);
+    List<SolicitacaoCredito> findByTipoConta(TipoConta tipoConta);
 
     @Query("SELECT s FROM SolicitacaoCredito s WHERE s.dataSolicitacao BETWEEN :dataInicio AND :dataFim")
     List<SolicitacaoCredito> findByDataSolicitacaoBetween(
@@ -24,6 +25,5 @@ public interface SolicitacaoCreditoRepository extends JpaRepository<SolicitacaoC
             @Param("dataFim") LocalDateTime dataFim);
 
     @Query("SELECT COUNT(s) FROM SolicitacaoCredito s WHERE s.aprovado = true AND s.tipoConta = :tipoConta")
-    Long countAprovadosByTipoConta(@Param("tipoConta") String tipoConta);
+    Long countAprovadosByTipoConta(@Param("tipoConta") TipoConta tipoConta);
 }
-

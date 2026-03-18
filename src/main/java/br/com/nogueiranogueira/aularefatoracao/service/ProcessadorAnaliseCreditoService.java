@@ -2,9 +2,6 @@ package br.com.nogueiranogueira.aularefatoracao.service;
 
 import br.com.nogueiranogueira.aularefatoracao.dto.SolicitacaoCreditoRecord;
 import br.com.nogueiranogueira.aularefatoracao.factory.AnaliseCreditoFactory;
-import br.com.nogueiranogueira.aularefatoracao.strategy.AnaliseStrategy;
-import br.com.nogueiranogueira.aularefatoracao.strategy.AnaliseStrategyPF;
-import br.com.nogueiranogueira.aularefatoracao.strategy.AnaliseStrategyPJ;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +10,10 @@ import java.util.concurrent.Executors;
 @Service
 public class ProcessadorAnaliseCreditoService {
 
-    private List<AnaliseStrategy> analiseStrategies;
+    private final AnaliseCreditoFactory analiseCreditoFactory;
 
-    public ProcessadorAnaliseCreditoService() {
-
+    public ProcessadorAnaliseCreditoService(AnaliseCreditoFactory analiseCreditoFactory) {
+        this.analiseCreditoFactory = analiseCreditoFactory;
     }
 
     public void processarLote(List<SolicitacaoCreditoRecord> solicitacoes) {
@@ -43,12 +40,6 @@ public class ProcessadorAnaliseCreditoService {
             return;
         }
 
-        analiseStrategies.stream()
-                .filter(e -> e.elegivel(solicitacao))
-                .findFirst()
-                .ifPresentOrElse(
-                        estrategia -> estrategia.analisar(solicitacao),
-                        () -> System.out.println("Nenhuma estratégia encontrada para este perfil.")
-                );
+        analiseCreditoFactory.criarEstrategia(solicitacao.tipo()).analisar(solicitacao);
     }
 }

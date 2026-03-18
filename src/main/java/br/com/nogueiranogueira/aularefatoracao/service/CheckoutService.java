@@ -1,6 +1,15 @@
 package br.com.nogueiranogueira.aularefatoracao.service;
 
+import br.com.nogueiranogueira.aularefatoracao.strategy.PagamentoFactory;
+import br.com.nogueiranogueira.aularefatoracao.strategy.PagamentoStrategy;
+
 public class CheckoutService {
+
+    private final PagamentoFactory pagamentoFactory;
+
+    public CheckoutService(PagamentoFactory pagamentoFactory) {
+        this.pagamentoFactory = pagamentoFactory;
+    }
 
     /**
      * BAD SMELLS PRESENTES NESTE CÓDIGO:
@@ -13,41 +22,8 @@ public class CheckoutService {
 
         System.out.println("=== Iniciando processamento de pagamento ===");
 
-        if (metodo == null || metodo.trim().isEmpty()) {
-            throw new IllegalArgumentException("Método de pagamento não informado!");
-        }
-
-        if (metodo.equalsIgnoreCase("PIX")) {
-            // Regra do PIX: 5% de desconto
-            double valorComDesconto = valor * 0.95;
-            System.out.println("Calculando desconto do PIX...");
-            System.out.println("Gerando chave Copia e Cola.");
-            System.out.println("Pagamento via PIX processado. Total cobrado: R$ " + valorComDesconto);
-
-        } else if (metodo.equalsIgnoreCase("CARTAO_CREDITO")) {
-            // Regra do Cartão: 5% de taxa de conveniência/juros
-            double valorComAcrescimo = valor * 1.05;
-            System.out.println("Conectando com a adquirente (Cielo/Rede)...");
-            System.out.println("Validando limite e risco de fraude.");
-            System.out.println("Pagamento via Cartão processado. Total cobrado: R$ " + valorComAcrescimo);
-
-        } else if (metodo.equalsIgnoreCase("PAYPAL")) {
-            // Regra PayPal: Sem taxa extra, mas com redirecionamento
-            System.out.println("Gerando token de sessão do PayPal...");
-            System.out.println("Redirecionando cliente para a carteira digital.");
-            System.out.println("Pagamento via PayPal processado. Total cobrado: R$ " + valor);
-
-        } else if (metodo.equalsIgnoreCase("BOLETO")) {
-            // Regra Boleto: Taxa fixa de R$ 3,50 para emissão
-            double valorBoleto = valor + 3.50;
-            System.out.println("Registrando boleto no banco emissor...");
-            System.out.println("Gerando código de barras com vencimento para 3 dias úteis.");
-            System.out.println("Pagamento via Boleto processado. Total cobrado: R$ " + valorBoleto);
-
-        } else {
-            // O pesadelo da manutenção: Qualquer erro de digitação cai aqui.
-            throw new IllegalArgumentException("Método de pagamento não suportado: " + metodo);
-        }
+        PagamentoStrategy strategy = pagamentoFactory.criarEstrategia(metodo);
+        strategy.pagar(valor);
 
         System.out.println("=== Finalizando transação ===");
     }

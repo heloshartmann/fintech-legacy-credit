@@ -4,6 +4,7 @@ import br.com.nogueiranogueira.aularefatoracao.model.SolicitacaoAnalise;
 import br.com.nogueiranogueira.aularefatoracao.model.SolicitacaoCredito;
 import br.com.nogueiranogueira.aularefatoracao.model.TipoConta;
 import br.com.nogueiranogueira.aularefatoracao.repository.SolicitacaoCreditoRepository;
+import br.com.nogueiranogueira.aularefatoracao.service.credito.AnaliseCreditoFactory;
 import br.com.nogueiranogueira.aularefatoracao.service.credito.AnaliseStrategy;
 import br.com.nogueiranogueira.aularefatoracao.service.credito.AnaliseStrategyPF;
 import br.com.nogueiranogueira.aularefatoracao.service.credito.AnaliseStrategyPJ;
@@ -29,17 +30,17 @@ public class ProcessadorCreditoService {
     private static final String MOTIVO_TIPO_CONTA_DESCONHECIDO = "Tipo de conta desconhecido";
     private static final String MOTIVO_REGRAS_DA_ESTRATEGIA = "Reprovado pelas regras da estratégia";
 
-    private final List<AnaliseStrategy> estrategias;
+    private final AnaliseCreditoFactory analiseCreditoFactory;
     private final SolicitacaoCreditoRepository repository;
 
     @Autowired
-    public ProcessadorCreditoService(List<AnaliseStrategy> estrategias, SolicitacaoCreditoRepository repository) {
-        this.estrategias = estrategias;
+    public ProcessadorCreditoService(AnaliseCreditoFactory analiseCreditoFactory, SolicitacaoCreditoRepository repository) {
+        this.analiseCreditoFactory = analiseCreditoFactory;
         this.repository = repository;
     }
 
     public ProcessadorCreditoService() {
-        this.estrategias = List.of(new AnaliseStrategyPF(), new AnaliseStrategyPJ());
+        this.analiseCreditoFactory = new AnaliseCreditoFactory(List.of(new AnaliseStrategyPF(), new AnaliseStrategyPJ()));
         this.repository = null;
     }
 
@@ -64,7 +65,7 @@ public class ProcessadorCreditoService {
             return false;
         }
 
-        AnaliseStrategy strategy = encontrarStrategyElegivel(solicitacao.tipoConta());
+        AnaliseStrategy strategy = analiseCreditoFactory.criarEstrategia(solicitacao.tipoConta());
         if (strategy == null) {
             salvarSolicitacao(solicitacao, false, MOTIVO_TIPO_CONTA_DESCONHECIDO);
             return false;
@@ -94,17 +95,6 @@ public class ProcessadorCreditoService {
                 }
             }
         }
-    }
-
-    private AnaliseStrategy encontrarStrategyElegivel(TipoConta tipoConta) {
-        if (tipoConta == null || tipoConta == TipoConta.DESCONHECIDO) {
-            return null;
-        }
-
-        return estrategias.stream()
-                .filter(strategy -> strategy.elegivel(tipoConta))
-                .findFirst()
-                .orElse(null);
     }
 
     private void salvarSolicitacao(SolicitacaoAnalise solicitacaoAnalise,

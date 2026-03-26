@@ -13,6 +13,7 @@ public class BureauGatewayAdapter implements BureauGateway {
             case BR -> score + 20;
             case MX -> score + 10;
             case US -> score + 15;
+            case PT -> score + 10;
         };
     }
 }

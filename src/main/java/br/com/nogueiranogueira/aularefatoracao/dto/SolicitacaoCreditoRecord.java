@@ -1,6 +1,7 @@
 package br.com.nogueiranogueira.aularefatoracao.dto;
 
 import br.com.nogueiranogueira.aularefatoracao.core.analise.Pais;
+import br.com.nogueiranogueira.aularefatoracao.core.documento.Documento;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,7 @@ public record SolicitacaoCreditoRecord(
         int score,
         boolean negativado,
         TipoConta tipo,
-        Pais pais
+        Pais pais,
+        Documento documento
 ) {
 }

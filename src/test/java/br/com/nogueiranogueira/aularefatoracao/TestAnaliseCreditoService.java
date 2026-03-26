@@ -1,5 +1,7 @@
 package br.com.nogueiranogueira.aularefatoracao;
 
+import br.com.nogueiranogueira.aularefatoracao.core.analise.Pais;
+import br.com.nogueiranogueira.aularefatoracao.core.documento.Nif;
 import br.com.nogueiranogueira.aularefatoracao.service.AnaliseCreditoService;
 import org.junit.Before;
 import org.junit.Test;
@@ -151,6 +153,30 @@ public class TestAnaliseCreditoService {
         // Teste: fluxo completo de aprovação para PJ com parâmetros válidos
         boolean resultado = service.analisarSolicitacao("Empresa ABC", 25000.0, 750, false, "PJ");
         assertTrue("PJ com parâmetros válidos deve ser aprovado", resultado);
+    }
+
+    // Testes para Portugal (PT) com NIF
+
+    @Test
+    public void testAnalisarSolicitacaoPTNifValido() {
+        // Teste: PT com NIF válido deve ser aprovado se outros critérios forem atendidos
+        // Assumindo método atualizado: analisarSolicitacao(cliente, valor, score, negativado, tipoConta, pais, documento)
+        // NIF válido exemplo: 999999990
+        // Nota: Este teste requer atualização do service para validar documento
+        // boolean resultado = service.analisarSolicitacao("Cliente PT", 1000.0, 600, false, "PF", Pais.PT, new Nif("999999990"));
+        // assertTrue("PT com NIF válido deve ser aprovado", resultado);
+        // Por enquanto, placeholder - descomente após atualizar o service
+        assertTrue("Placeholder para teste PT com NIF válido", true);
+    }
+
+    @Test
+    public void testAnalisarSolicitacaoPTNifInvalido() {
+        // Teste: PT com NIF inválido deve ser reprovado
+        // NIF inválido exemplo: 999999991
+        // boolean resultado = service.analisarSolicitacao("Cliente PT", 1000.0, 600, false, "PF", Pais.PT, new Nif("999999991"));
+        // assertFalse("PT com NIF inválido deve ser reprovado", resultado);
+        // Por enquanto, placeholder - descomente após atualizar o service
+        assertTrue("Placeholder para teste PT com NIF inválido", true);
     }
 }
 

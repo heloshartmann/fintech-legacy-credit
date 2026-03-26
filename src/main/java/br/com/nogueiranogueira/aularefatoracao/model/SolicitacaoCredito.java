@@ -37,7 +37,7 @@ public class SolicitacaoCredito {
     @Column(nullable = false)
     private Boolean negativado;
 
-    @NotBlank(message = "Tipo de conta não pode ser vazio")
+    @NotNull(message = "Tipo de conta não pode ser nulo")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoConta tipoConta;

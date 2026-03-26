@@ -1,7 +1,8 @@
 package br.com.nogueiranogueira.aularefatoracao.service;
 
 import br.com.nogueiranogueira.aularefatoracao.dto.SolicitacaoCreditoRecord;
-import br.com.nogueiranogueira.aularefatoracao.factory.AnaliseCreditoFactory;
+import br.com.nogueiranogueira.aularefatoracao.core.processamento.ProcessadorCreditoCore;
+import br.com.nogueiranogueira.aularefatoracao.core.processamento.SolicitacaoCoreMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,10 +11,13 @@ import java.util.concurrent.Executors;
 @Service
 public class ProcessadorAnaliseCreditoService {
 
-    private final AnaliseCreditoFactory analiseCreditoFactory;
+    private final ProcessadorCreditoCore processadorCreditoCore;
+    private final SolicitacaoCoreMapper solicitacaoCoreMapper;
 
-    public ProcessadorAnaliseCreditoService(AnaliseCreditoFactory analiseCreditoFactory) {
-        this.analiseCreditoFactory = analiseCreditoFactory;
+    public ProcessadorAnaliseCreditoService(ProcessadorCreditoCore processadorCreditoCore,
+                                            SolicitacaoCoreMapper solicitacaoCoreMapper) {
+        this.processadorCreditoCore = processadorCreditoCore;
+        this.solicitacaoCoreMapper = solicitacaoCoreMapper;
     }
 
     public void processarLote(List<SolicitacaoCreditoRecord> solicitacoes) {
@@ -35,11 +39,6 @@ public class ProcessadorAnaliseCreditoService {
     }
 
     public void processarIndividual(SolicitacaoCreditoRecord solicitacao) {
-        if (solicitacao.negativado()) {
-            System.out.println("Rejeição Automática: Negativado -> " + solicitacao.cliente());
-            return;
-        }
-
-        analiseCreditoFactory.criarEstrategia(solicitacao.tipo()).analisar(solicitacao);
+        processadorCreditoCore.processar(solicitacaoCoreMapper.toCore(solicitacao));
     }
 }

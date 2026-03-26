@@ -3,11 +3,13 @@ package br.com.nogueiranogueira.aularefatoracao;
 import br.com.nogueiranogueira.aularefatoracao.model.SolicitacaoCredito;
 import br.com.nogueiranogueira.aularefatoracao.repository.SolicitacaoCreditoRepository;
 import br.com.nogueiranogueira.aularefatoracao.service.AnaliseCreditoService;
+import br.com.nogueiranogueira.aularefatoracao.controller.SolicitacaoCreditoController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -17,8 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(
+    classes = Main.class,
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+    properties = "server.servlet.context-path=/api"
+)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(SolicitacaoCreditoController.class)
 public class SolicitacaoCreditoIntegrationTest {
 
     @Autowired
